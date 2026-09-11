@@ -3,8 +3,8 @@ import {
   vitePlugin as remixVitePlugin,
 } from '@remix-run/dev';
 import { installGlobals } from '@remix-run/node';
-import { vercelPreset } from '@vercel/remix/vite';
 import UnoCSS from 'unocss/vite';
+import { createRequire } from 'node:module';
 import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
@@ -16,13 +16,13 @@ dotenv.config({ path: '.env.local' });
 dotenv.config({ path: '.env' });
 dotenv.config();
 
-// Remix's Vercel preset uses the Node runtime and Vercel Functions.
-// Keep the Cloudflare dev proxy only for local/non-Vercel development.
 installGlobals();
 
-export default defineConfig((config) => {
-  const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
+const require = createRequire(import.meta.url);
+const vercelPreset = isVercel ? require('@vercel/remix/vite').vercelPreset : undefined;
 
+export default defineConfig((config) => {
   return {
     define: {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -62,7 +62,7 @@ export default defineConfig((config) => {
           v3_throwAbortReason: true,
           v3_lazyRouteDiscovery: true,
         },
-        ...(isVercel ? { presets: [vercelPreset()] } : {}),
+        ...(isVercel && vercelPreset ? { presets: [vercelPreset()] } : {}),
       }),
       UnoCSS(),
       tsconfigPaths(),
