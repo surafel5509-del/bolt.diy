@@ -2,7 +2,6 @@ import { handleRequest as vercelHandleRequest } from '@vercel/remix';
 import type { EntryContext } from '@vercel/remix';
 import { RemixServer } from '@remix-run/react';
 import { themeStore } from '~/lib/stores/theme';
-import { renderToString } from 'react-dom/server';
 import { Head } from './root';
 import { renderHeadToString } from 'remix-island';
 
