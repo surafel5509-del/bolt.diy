@@ -1,0 +1,40 @@
+name: Vercel Build Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  vercel-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Install Vercel Remix preset
+        run: pnpm add @vercel/remix@2.16.7 --save-dev
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Build with Vercel runtime configuration
+        run: pnpm run build
+        env:
+          VERCEL: '1'
+          NODE_ENV: production
