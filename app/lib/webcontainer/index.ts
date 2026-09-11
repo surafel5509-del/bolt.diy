@@ -2,6 +2,8 @@ import { WebContainer, configureAPIKey } from '@webcontainer/api';
 import { WORK_DIR_NAME } from '~/utils/constants';
 import { cleanStackTrace } from '~/utils/stacktrace';
 
+const WEB_CONTAINER_API_KEY_STORAGE_KEY = 'nova.webcontainer.apiKey';
+
 interface WebContainerContext {
   loaded: boolean;
   error?: string;
@@ -33,7 +35,10 @@ if (!import.meta.env.SSR) {
         );
       }
 
-      const apiKey = import.meta.env.VITE_WEB_CONTAINER_API_KEY;
+      const browserApiKey = window.localStorage.getItem(WEB_CONTAINER_API_KEY_STORAGE_KEY)?.trim();
+      const configuredApiKey = import.meta.env.VITE_WEB_CONTAINER_API_KEY?.trim();
+      const apiKey = browserApiKey || configuredApiKey;
+
       if (apiKey) {
         configureAPIKey(apiKey);
       }
