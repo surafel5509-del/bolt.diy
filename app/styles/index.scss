@@ -16,20 +16,16 @@ body {
 
 :root {
   --gradient-opacity: 0.8;
-  --primary-color: rgba(158, 117, 240, var(--gradient-opacity));
-  --secondary-color: rgba(138, 43, 226, var(--gradient-opacity));
-  --accent-color: rgba(128, 59, 239, var(--gradient-opacity));
-  // --primary-color: rgba(147, 112, 219, var(--gradient-opacity));
-  // --secondary-color: rgba(138, 43, 226, var(--gradient-opacity));
-  // --accent-color: rgba(180, 170, 220, var(--gradient-opacity));
+  --primary-color: rgba(96, 165, 250, var(--gradient-opacity));
+  --secondary-color: rgba(129, 140, 248, var(--gradient-opacity));
+  --accent-color: rgba(45, 212, 191, var(--gradient-opacity));
 }
 
 .modern-scrollbar {
   overflow: auto;
 
-  // WebKit scrollbar styling
   &::-webkit-scrollbar {
-    width: 2px;
+    width: 4px;
     height: 4px;
   }
 
@@ -38,36 +34,257 @@ body {
   }
 
   &::-webkit-scrollbar-thumb {
-    // Use CSS variables for colors
     background-color: var(--modern-scrollbar-thumb-background);
-    border-radius: 9999px; // pill shape
-    border: 2px solid transparent; // for padding-like effect
+    border-radius: 9999px;
+    border: 1px solid transparent;
     background-clip: content-box;
-    transition: background-color 0.2s ease-in-out; // Add transition
+    transition: background-color 0.2s ease-in-out;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    // Use CSS variable for hover color
     background-color: var(--modern-scrollbar-thumb-backgroundHover);
   }
 
-  // Firefox support
   scrollbar-width: thin;
-  // Use CSS variables for Firefox colors
-  scrollbar-color: var(--modern-scrollbar-thumb-backgroundHover) transparent; // Use hover color for thumb for consistency
+  scrollbar-color: var(--modern-scrollbar-thumb-backgroundHover) transparent;
 }
 
 .modern-scrollbar-invert {
   &::-webkit-scrollbar-thumb {
-    // Override with a contrasting color, e.g., primary text color with transparency
     background-color: color-mix(in srgb, var(--bolt-elements-textPrimary), transparent 70%);
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    // Darker/more opaque version on hover
     background-color: color-mix(in srgb, var(--bolt-elements-textPrimary), transparent 50%);
   }
 
-  // Firefox support for inverted colors
   scrollbar-color: color-mix(in srgb, var(--bolt-elements-textPrimary), transparent 50%) transparent;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NOVA Studio visual system                                                  */
+/* -------------------------------------------------------------------------- */
+
+:root {
+  --nova-cyan: #2dd4bf;
+  --nova-blue: #60a5fa;
+  --nova-indigo: #818cf8;
+  --nova-ink: #07090d;
+  --nova-panel: rgba(13, 17, 25, 0.78);
+  --nova-panel-strong: rgba(17, 23, 34, 0.94);
+  --nova-line: rgba(148, 163, 184, 0.14);
+  --nova-line-strong: rgba(96, 165, 250, 0.28);
+  --nova-glow: rgba(45, 212, 191, 0.12);
+}
+
+html[data-theme='dark'] body {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(45, 212, 191, 0.08), transparent 28rem),
+    radial-gradient(circle at 88% 18%, rgba(96, 165, 250, 0.08), transparent 30rem),
+    linear-gradient(145deg, #07090d 0%, #0a0d13 52%, #080a0f 100%);
+}
+
+html[data-theme='light'] body {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(45, 212, 191, 0.12), transparent 28rem),
+    radial-gradient(circle at 90% 10%, rgba(96, 165, 250, 0.12), transparent 30rem),
+    linear-gradient(145deg, #f8fafc 0%, #ffffff 58%, #f4f7fb 100%);
+}
+
+.nova-app {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.nova-app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+.nova-header {
+  position: relative;
+  z-index: 20;
+  margin: 12px 14px 0;
+  min-height: 56px;
+  border: 1px solid var(--nova-line);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--bolt-elements-bg-depth-1), transparent 14%);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 14px 50px rgba(0, 0, 0, 0.12);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.nova-header-idle {
+  border-color: rgba(148, 163, 184, 0.12);
+}
+
+.nova-header-active {
+  border-color: var(--nova-line-strong);
+  box-shadow: 0 14px 60px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(45, 212, 191, 0.04);
+}
+
+.nova-menu-trigger {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--nova-line);
+  border-radius: 10px;
+  color: var(--bolt-elements-textSecondary);
+  background: rgba(148, 163, 184, 0.04);
+  transition: 160ms ease;
+}
+
+.nova-menu-trigger:hover {
+  color: var(--bolt-elements-textPrimary);
+  border-color: var(--nova-line-strong);
+  background: rgba(96, 165, 250, 0.08);
+  transform: translateY(-1px);
+}
+
+.nova-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nova-mark {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+  padding: 5px;
+  border-radius: 9px;
+  transform: rotate(-6deg);
+  background: linear-gradient(135deg, var(--nova-cyan), var(--nova-blue) 52%, var(--nova-indigo));
+  box-shadow: 0 7px 24px rgba(45, 212, 191, 0.18);
+}
+
+.nova-mark span {
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.nova-mark span:last-child {
+  grid-column: span 2;
+  width: 62%;
+  justify-self: end;
+}
+
+.nova-wordmark-text {
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: 0.13em;
+  font-weight: 800;
+  color: var(--bolt-elements-textPrimary);
+}
+
+.nova-wordmark-text span {
+  margin-left: 4px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--bolt-elements-textSecondary);
+}
+
+.nova-main {
+  position: relative;
+  min-height: 0;
+}
+
+#intro {
+  position: relative;
+  margin-top: clamp(11vh, 15vh, 18vh) !important;
+  max-width: 760px !important;
+  padding: 0 24px 18px;
+}
+
+#intro::before {
+  content: 'AI SOFTWARE STUDIO';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 11px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(45, 212, 191, 0.22);
+  border-radius: 999px;
+  background: rgba(45, 212, 191, 0.06);
+  color: var(--nova-cyan);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  box-shadow: inset 0 0 20px rgba(45, 212, 191, 0.03);
+}
+
+#intro h1 {
+  max-width: 700px;
+  margin: 0 auto 18px !important;
+  font-size: clamp(2.8rem, 6vw, 5.7rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.055em;
+  font-weight: 800 !important;
+  background: linear-gradient(100deg, var(--bolt-elements-textPrimary) 10%, #c4b5fd 46%, var(--nova-cyan) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  text-wrap: balance;
+}
+
+#intro p {
+  max-width: 590px;
+  margin: 0 auto !important;
+  color: var(--bolt-elements-textSecondary) !important;
+  font-size: 1rem !important;
+  line-height: 1.75 !important;
+  text-wrap: balance;
+}
+
+#intro + * {
+  position: relative;
+}
+
+/* Give the primary composer a floating studio-console feel without changing
+   the existing chat component logic. */
+.nova-main textarea,
+.nova-main [contenteditable='true'] {
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.nova-main textarea:focus,
+.nova-main [contenteditable='true']:focus {
+  outline: none;
+  border-color: rgba(45, 212, 191, 0.35) !important;
+  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.055), 0 18px 55px rgba(0, 0, 0, 0.16);
+}
+
+@media (max-width: 640px) {
+  .nova-header {
+    margin: 8px 8px 0;
+    border-radius: 14px;
+  }
+
+  .nova-wordmark-text span {
+    display: none;
+  }
+
+  #intro {
+    margin-top: 10vh !important;
+    padding-inline: 18px;
+  }
+
+  #intro h1 {
+    font-size: clamp(2.45rem, 13vw, 4rem) !important;
+  }
 }
