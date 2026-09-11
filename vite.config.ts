@@ -1,4 +1,9 @@
-import { cloudflareDevProxyVitePlugin as remixCloudflareDevProxy, vitePlugin as remixVitePlugin } from '@remix-run/dev';
+import {
+  cloudflareDevProxyVitePlugin as remixCloudflareDevProxy,
+  vitePlugin as remixVitePlugin,
+} from '@remix-run/dev';
+import { installGlobals } from '@remix-run/node';
+import { vercelPreset } from '@vercel/remix/vite';
 import UnoCSS from 'unocss/vite';
 import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -6,12 +11,18 @@ import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import * as dotenv from 'dotenv';
 
-// Load environment variables from multiple files
+// Load environment variables from multiple files.
 dotenv.config({ path: '.env.local' });
 dotenv.config({ path: '.env' });
 dotenv.config();
 
+// Remix's Vercel preset uses the Node runtime and Vercel Functions.
+// Keep the Cloudflare dev proxy only for local/non-Vercel development.
+installGlobals();
+
 export default defineConfig((config) => {
+  const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
+
   return {
     define: {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -43,7 +54,7 @@ export default defineConfig((config) => {
           return null;
         },
       },
-      config.mode !== 'test' && remixCloudflareDevProxy(),
+      ...(isVercel && config.mode !== 'test' ? [] : config.mode !== 'test' ? [remixCloudflareDevProxy()] : []),
       remixVitePlugin({
         future: {
           v3_fetcherPersist: true,
@@ -51,6 +62,7 @@ export default defineConfig((config) => {
           v3_throwAbortReason: true,
           v3_lazyRouteDiscovery: true,
         },
+        ...(isVercel ? { presets: [vercelPreset()] } : {}),
       }),
       UnoCSS(),
       tsconfigPaths(),
@@ -79,7 +91,7 @@ export default defineConfig((config) => {
         '**/cypress/**',
         '**/.{idea,git,cache,output,temp}/**',
         '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
-        '**/tests/preview/**', // Exclude preview tests that require Playwright
+        '**/tests/preview/**',
       ],
     },
   };
